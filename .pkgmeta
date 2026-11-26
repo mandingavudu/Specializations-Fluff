@@ -1,0 +1,6 @@
+package-as: SpecializationsFluff
+
+ignore:
+  - .git
+  - .github
+  - README.md
