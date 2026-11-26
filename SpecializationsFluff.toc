@@ -4,3 +4,7 @@
 ## Version: 1.0.0
 ## SavedVariablesPerCharacter: SpecializationsFluffDB
 
+Core.lua
+Features\Companions.lua
+Options\Companions.lua
+Options.lua
