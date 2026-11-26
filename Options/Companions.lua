@@ -1,7 +1,7 @@
 local _, addon = ...
 local specInfo = C_SpecializationInfo
 local title = COMPANIONS or (GetLocale() == "ptBR" and "Mascotes" or "Companions")
-local pageSize = 6
+local pageSize = 15
 
 local panel
 local specRows = {}
@@ -31,7 +31,8 @@ local function CreateRow(parent, height)
     row:SetHighlightTexture(highlight)
 
     row.icon = row:CreateTexture(nil, "ARTWORK")
-    row.icon:SetSize(20, 20)
+    local iconSize = math.min(20, height - 2)
+    row.icon:SetSize(iconSize, iconSize)
     row.icon:SetPoint("LEFT", 6, 0)
     row.label = AddLabel(row, "GameFontHighlight", "LEFT", 34, 0)
     row.label:SetJustifyH("LEFT")
@@ -118,7 +119,7 @@ function addon.RegisterCompanionOptions(parentCategory)
     AddLabel(panel, "GameFontHighlight", "TOPLEFT", 20, -46,
         "Choose a specialization, then select a companion from your collection.")
 
-    local y = -74
+    local y = -70
     local _, _, classID = UnitClass("player")
     for index = 1, specInfo.GetNumSpecializationsForClassID(classID) do
         local id, name, _, icon = specInfo.GetSpecializationInfo(index)
@@ -160,10 +161,13 @@ function addon.RegisterCompanionOptions(parentCategory)
         panel.search:SetScript("OnEscapePressed", panel.search.ClearFocus)
         panel.search:SetScript("OnEnterPressed", panel.search.ClearFocus)
 
+        local resultHeight = 18
+        local resultStride = resultHeight + 1
+        local resultsY = y - 68
         panel.results = {}
         for index = 1, pageSize do
-            local row = CreateRow(panel, 23)
-            local rowY = y - 68 - (index - 1) * 24
+            local row = CreateRow(panel, resultHeight)
+            local rowY = resultsY - (index - 1) * resultStride
             row:SetPoint("TOPLEFT", 20, rowY)
             row:SetPoint("TOPRIGHT", -20, rowY)
             row.label:SetPoint("RIGHT", -72, 0)
@@ -182,7 +186,7 @@ function addon.RegisterCompanionOptions(parentCategory)
         end
 
         panel.empty = AddLabel(panel, "GameFontDisable", "TOPLEFT", 20, y - 72)
-        local controlsY = y - 68 - pageSize * 24 - 6
+        local controlsY = resultsY - pageSize * resultStride - 6
         panel.previous = CreateButton(panel, PREVIOUS or "Previous", 90, function()
             page = page - 1
             RefreshResults()
