@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.1
+
+- Add an MIT license with the 2026 mandingavudu copyright notice.
+
 ## 1.0.0
 
 Initial release of Specializations Fluff for World of Warcraft Retail.
