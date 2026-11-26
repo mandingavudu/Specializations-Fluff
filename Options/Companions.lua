@@ -62,6 +62,7 @@ local function RefreshResults()
         local pet = matches[(page - 1) * pageSize + index]
         row.guid = pet and pet.guid
         row:SetShown(pet ~= nil)
+        row.favoriteStar:SetShown(pet and pet.isFavorite or false)
         if pet then
             row.label:SetText(pet.label)
             row.icon:SetTexture(pet.icon)
@@ -163,6 +164,11 @@ function addon.RegisterCompanionOptions(parentCategory)
             row:SetPoint("TOPRIGHT", -20, rowY)
             row.label:SetPoint("RIGHT", -72, 0)
             row.level = AddLabel(row, "GameFontHighlightSmall", "RIGHT", -8, 0)
+            row.favoriteStar = row:CreateTexture(nil, "ARTWORK")
+            row.favoriteStar:SetAtlas("PetJournal-FavoritesIcon")
+            row.favoriteStar:SetSize(14, 14)
+            row.favoriteStar:SetPoint("RIGHT", row.level, "LEFT", -4, 0)
+            row.favoriteStar:Hide()
             row:SetScript("OnClick", function(self)
                 panel.search:ClearFocus()
                 SetBinding(self.guid)
@@ -211,7 +217,10 @@ function addon.RegisterCompanionOptions(parentCategory)
             FilterResults()
         end
         panel:SetScript("OnShow", RefreshCollection)
-        for _, event in ipairs({ "NEW_PET_ADDED", "PET_JOURNAL_PET_DELETED", "PET_JOURNAL_PET_RESTORED", "PET_JOURNAL_PET_REVOKED" }) do
+        for _, event in ipairs({
+            "PET_JOURNAL_LIST_UPDATE", "NEW_PET_ADDED", "PET_JOURNAL_PET_DELETED",
+            "PET_JOURNAL_PET_RESTORED", "PET_JOURNAL_PET_REVOKED",
+        }) do
             panel:RegisterEvent(event)
         end
         panel:RegisterEvent("PLAYER_REGEN_ENABLED")
