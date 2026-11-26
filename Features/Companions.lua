@@ -28,13 +28,20 @@ function addon.GetCompanionCollection()
     local pets, petsByGUID = {}, {}
     local totals = {}
     for _, guid in ipairs(journal.GetOwnedPetIDs() or {}) do
-        local _, customName, level, _, _, _, _, species, icon = journal.GetPetInfoByPetID(guid)
+        local _, customName, level, _, _, _, isFavorite, species, icon = journal.GetPetInfoByPetID(guid)
         if species and not (journal.PetIsRevoked and journal.PetIsRevoked(guid)) then
             local name = species
             if customName and customName ~= "" and customName ~= species then
                 name = string.format("%s (%s)", customName, species)
             end
-            local pet = { guid = guid, name = name, searchName = name:lower(), level = level or 0, icon = icon }
+            local pet = {
+                guid = guid,
+                name = name,
+                searchName = name:lower(),
+                level = level or 0,
+                icon = icon,
+                isFavorite = isFavorite,
+            }
             pets[#pets + 1] = pet
             petsByGUID[guid] = pet
             totals[name] = (totals[name] or 0) + 1
@@ -48,7 +55,9 @@ function addon.GetCompanionCollection()
         return a.guid < b.guid
     end)
 
+    -- Keep each copy's number stable when favorites change.
     local copies = {}
+    local orderedPets = {}
     for _, pet in ipairs(pets) do
         if totals[pet.name] > 1 then
             copies[pet.name] = (copies[pet.name] or 0) + 1
@@ -56,9 +65,18 @@ function addon.GetCompanionCollection()
         else
             pet.label = pet.name
         end
+        if pet.isFavorite then
+            orderedPets[#orderedPets + 1] = pet
+        end
     end
 
-    return pets, petsByGUID
+    for _, pet in ipairs(pets) do
+        if not pet.isFavorite then
+            orderedPets[#orderedPets + 1] = pet
+        end
+    end
+
+    return orderedPets, petsByGUID
 end
 
 function addon.GetCompanionBinding(specID)
