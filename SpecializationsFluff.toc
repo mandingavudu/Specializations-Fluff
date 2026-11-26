@@ -1,0 +1,6 @@
+## Interface: 120105, 120107
+## Title: Specializations Fluff
+## Notes: A World of Warcraft Retail addon for per-specialization cosmetics.
+## Version: 1.0.0
+## SavedVariablesPerCharacter: SpecializationsFluffDB
+
