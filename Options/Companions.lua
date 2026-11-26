@@ -96,7 +96,11 @@ local function SetBinding(guid)
     end
     addon.SetCompanionBinding(selectedSpecID, guid)
     addon.RefreshCompanionOptions()
-    RefreshResults()
+    if guid and panel.search:GetText() ~= "" then
+        panel.search:SetText("")
+    else
+        RefreshResults()
+    end
 end
 
 local function CreateButton(parent, label, width, onClick)
