@@ -2,12 +2,33 @@ local _, addon = ...
 
 local NO_OP = 0
 local NO_TITLE = -1
+local isPortuguese = GetLocale() == "ptBR"
+local noTitleLabel = PLAYER_TITLE_NONE or (isPortuguese and "Sem título" or "No Title")
+local logFormats = isPortuguese and {
+    queued = "Alteração de título na fila (%s).",
+    executed = "Alteração de título executada (%s).",
+} or {
+    queued = "Title change queued (%s).",
+    executed = "Title change executed (%s).",
+}
 local inWorld = false
 local activeSpecID
 local assignmentPending = false
 local keyListener
+local queuedTitleID
 
 addon.TITLE_NO_OP = NO_OP
+
+function addon.GetTitleLogSettings()
+    return addon.GetChatLogSettings("titleLogSettings")
+end
+
+local function LogTitleChange(kind, titleName)
+    local settings = addon.GetTitleLogSettings()
+    if settings.enabled == true and settings[kind] == true then
+        addon.WriteChatLog(logFormats[kind]:format(titleName))
+    end
+end
 
 local function GetPlayerTitleName(titleID)
     if IsTitleKnown(titleID) then
@@ -38,11 +59,9 @@ function addon.GetTitleCollection()
         return a.id < b.id
     end)
 
-    local isPortuguese = GetLocale() == "ptBR"
     local unchanged = isPortuguese and "Manter título atual" or "No-Op"
     local noOp = { id = NO_OP, label = unchanged, searchName = strlower(unchanged) }
-    local none = PLAYER_TITLE_NONE or (isPortuguese and "Sem título" or "No Title")
-    local noTitle = { id = NO_TITLE, label = none, searchName = strlower(none) }
+    local noTitle = { id = NO_TITLE, label = noTitleLabel, searchName = strlower(noTitleLabel) }
     table.insert(titles, 1, noTitle)
     table.insert(titles, 1, noOp)
     titlesByID[NO_OP] = noOp
@@ -92,27 +111,38 @@ local function ResolvePendingTitle()
         assignmentPending = false
         return
     end
-    if titleID > 0 and not GetPlayerTitleName(titleID) then
-        -- The known-title list can become available after entering the world.
-        return
+    local titleName = titleID == NO_TITLE and noTitleLabel or GetPlayerTitleName(titleID)
+    if titleName then
+        return titleID, titleName
     end
-    return titleID
+    -- The known-title list can become available after entering the world.
 end
 
-local function OnTitleKeyDown(self)
-    local titleID = ResolvePendingTitle()
-    self:Hide()
-    if titleID then
-        assignmentPending = false
-        SetCurrentTitle(titleID)
+local function SuspendInputQueue()
+    if keyListener then
+        keyListener:Hide()
     end
+    if not assignmentPending then
+        queuedTitleID = nil
+    end
+end
+
+local function OnTitleKeyDown()
+    local titleID, titleName = ResolvePendingTitle()
+    if not titleID then
+        SuspendInputQueue()
+        return
+    end
+    assignmentPending = false
+    SuspendInputQueue()
+    SetCurrentTitle(titleID)
+    LogTitleChange("executed", titleName)
 end
 
 local function RefreshInputQueue()
-    if not ResolvePendingTitle() then
-        if keyListener then
-            keyListener:Hide()
-        end
+    local titleID, titleName = ResolvePendingTitle()
+    if not titleID then
+        SuspendInputQueue()
         return
     end
     if not keyListener then
@@ -125,6 +155,10 @@ local function RefreshInputQueue()
         keyListener:SetScript("OnKeyDown", OnTitleKeyDown)
     end
     keyListener:Show()
+    if queuedTitleID ~= titleID then
+        queuedTitleID = titleID
+        LogTitleChange("queued", titleName)
+    end
 end
 
 function addon.SetTitleBinding(specID, titleID)
