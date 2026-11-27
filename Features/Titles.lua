@@ -202,11 +202,11 @@ function addon.SetTitleBinding(specID, titleID)
 end
 
 function addon.IsManualTitleSyncEnabled()
-    return SpecializationsFluffDB and SpecializationsFluffDB.syncManualTitleChanges == true
+    return SpecializationsFluffAccountDB and SpecializationsFluffAccountDB.syncManualTitleChanges == true
 end
 
 function addon.SetManualTitleSyncEnabled(enabled)
-    SpecializationsFluffDB.syncManualTitleChanges = enabled == true or nil
+    SpecializationsFluffAccountDB.syncManualTitleChanges = enabled == true
     if enabled ~= true and pendingManualTitle then
         pendingManualTitle = nil
         RefreshInputQueue()

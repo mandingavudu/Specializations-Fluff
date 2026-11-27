@@ -3,6 +3,7 @@
 ## Notes: A World of Warcraft Retail addon for per-specialization cosmetics.
 ## Version: @project-version@
 ## X-Curse-Project-ID: 1833080
+## SavedVariables: SpecializationsFluffAccountDB
 ## SavedVariablesPerCharacter: SpecializationsFluffDB
 
 Locales\embeds.xml
