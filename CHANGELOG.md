@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.0
+
+- Enable **Sync manual title changes** under **Titles** in `/fluff` to save title choices from the character window to your active specialization. Clearing your title saves **No Title**. The option is off by default.
+
 ## 1.2.0
 
 - Assign a pet to a specialization directly from the Pet Journal. Right-click a collected pet, choose **Apply to Spec**, then select a specialization.
