@@ -15,6 +15,19 @@ function addon.WriteChatLog(message)
     DEFAULT_CHAT_FRAME:AddMessage("[Specializations Fluff] " .. message)
 end
 
+function addon.GetSpecializations()
+    local specializations = {}
+    local _, _, classID = UnitClass("player")
+    local count = classID and specInfo.GetNumSpecializationsForClassID(classID) or 0
+    for index = 1, count do
+        local id, name, _, icon = specInfo.GetSpecializationInfo(index)
+        if id and id > 0 and name then
+            specializations[#specializations + 1] = { id = id, name = name, icon = icon }
+        end
+    end
+    return specializations
+end
+
 function addon.GetActiveSpecID()
     if InCombatLockdown() then
         return addon.activeSpecID
