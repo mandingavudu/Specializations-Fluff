@@ -26,6 +26,7 @@ local baseLocale = {
     ["PET_SUMMON_EXECUTED"] = "已召喚寵物%s。",
 
     -- Titles
+    ["SYNC_MANUAL_TITLE_CHANGES"] = "同步手動變更的頭銜",
     ["TITLES"] = PAPERDOLL_SIDEBAR_TITLES or "頭銜",
     ["TITLE_PICKER_INSTRUCTIONS"] = "選擇一個專精，然後選擇一個頭銜。",
     ["TITLE_FOR_SPEC"] = "頭銜（%s）",

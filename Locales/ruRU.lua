@@ -26,6 +26,7 @@ local baseLocale = {
     ["PET_SUMMON_EXECUTED"] = "Питомец призван%s.",
 
     -- Titles
+    ["SYNC_MANUAL_TITLE_CHANGES"] = "Синхронизировать ручную смену звания",
     ["TITLES"] = PAPERDOLL_SIDEBAR_TITLES or "Звания",
     ["TITLE_PICKER_INSTRUCTIONS"] = "Выберите специализацию и звание.",
     ["TITLE_FOR_SPEC"] = "Звание (%s)",

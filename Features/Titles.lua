@@ -3,6 +3,7 @@ local L = addon.L
 
 local NO_OP = 0
 local NO_TITLE = -1
+local MANUAL_TITLE_TIMEOUT = 3
 local logFormats = {
     queued = L.TITLE_CHANGE_QUEUED,
     executed = L.TITLE_CHANGE_EXECUTED,
@@ -12,6 +13,8 @@ local activeSpecID
 local assignmentPending = false
 local keyListener
 local queuedTitleID
+local applyingTitle = false
+local pendingManualTitle
 
 addon.TITLE_NO_OP = NO_OP
 
@@ -76,8 +79,19 @@ function addon.GetTitleBinding(specID)
     return NO_OP
 end
 
+local function SaveTitleBinding(specID, titleID)
+    if type(SpecializationsFluffDB.titles) ~= "table" then
+        SpecializationsFluffDB.titles = {}
+    end
+    SpecializationsFluffDB.titles[specID] = titleID ~= NO_OP and titleID or nil
+end
+
+local function NormalizeTitleID(titleID)
+    return titleID > 0 and titleID or NO_TITLE
+end
+
 local function ResolvePendingTitle()
-    if not inWorld or InCombatLockdown() then
+    if not inWorld or InCombatLockdown() or pendingManualTitle then
         return
     end
     local specID = addon.GetActiveSpecID()
@@ -101,8 +115,7 @@ local function ResolvePendingTitle()
         assignmentPending = false
         return
     end
-    local currentTitle = GetCurrentTitle()
-    if titleID == currentTitle or (titleID == NO_TITLE and currentTitle <= 0) then
+    if titleID == NormalizeTitleID(GetCurrentTitle()) then
         assignmentPending = false
         return
     end
@@ -130,11 +143,34 @@ local function OnTitleKeyDown()
     end
     assignmentPending = false
     SuspendInputQueue()
+    applyingTitle = true
     SetCurrentTitle(titleID)
+    applyingTitle = false
     LogTitleChange("executed", titleName)
 end
 
+local function ConfirmManualTitle()
+    local change = pendingManualTitle
+    if not change then
+        return
+    end
+
+    local specID = addon.GetActiveSpecID()
+    if specID ~= change.specID then
+        pendingManualTitle = nil
+    elseif NormalizeTitleID(GetCurrentTitle()) == change.titleID then
+        pendingManualTitle = nil
+        activeSpecID = specID
+        assignmentPending = false
+        SaveTitleBinding(specID, change.titleID)
+        if addon.RefreshTitleOptions then
+            addon.RefreshTitleOptions()
+        end
+    end
+end
+
 local function RefreshInputQueue()
+    ConfirmManualTitle()
     local titleID, titleName = ResolvePendingTitle()
     if not titleID then
         SuspendInputQueue()
@@ -157,15 +193,51 @@ local function RefreshInputQueue()
 end
 
 function addon.SetTitleBinding(specID, titleID)
-    if type(SpecializationsFluffDB.titles) ~= "table" then
-        SpecializationsFluffDB.titles = {}
-    end
-    SpecializationsFluffDB.titles[specID] = titleID ~= NO_OP and titleID or nil
+    SaveTitleBinding(specID, titleID)
     if specID == addon.GetActiveSpecID() then
+        pendingManualTitle = nil
         assignmentPending = true
         RefreshInputQueue()
     end
 end
+
+function addon.IsManualTitleSyncEnabled()
+    return SpecializationsFluffDB and SpecializationsFluffDB.syncManualTitleChanges == true
+end
+
+function addon.SetManualTitleSyncEnabled(enabled)
+    SpecializationsFluffDB.syncManualTitleChanges = enabled == true or nil
+    if enabled ~= true and pendingManualTitle then
+        pendingManualTitle = nil
+        RefreshInputQueue()
+    end
+end
+
+hooksecurefunc("SetCurrentTitle", function(titleID)
+    if not inWorld or applyingTitle or not addon.IsManualTitleSyncEnabled()
+        or type(titleID) ~= "number" or titleID < NO_TITLE then
+        return
+    end
+
+    local specID = addon.GetActiveSpecID()
+    if not specID then
+        return
+    end
+
+    -- Wait for the client to confirm the choice before replacing a saved assignment.
+    local change = { specID = specID, titleID = NormalizeTitleID(titleID) }
+    pendingManualTitle = change
+    RefreshInputQueue()
+    if pendingManualTitle == change then
+        C_Timer.After(MANUAL_TITLE_TIMEOUT, function()
+            if pendingManualTitle == change then
+                ConfirmManualTitle()
+                pendingManualTitle = nil
+                RefreshInputQueue()
+            end
+        end)
+    end
+end)
 
 local events = CreateFrame("Frame")
 events:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -181,6 +253,7 @@ events:SetScript("OnEvent", function(_, event, first, second)
         assignmentPending = assignmentPending or first or second
     elseif event == "PLAYER_LEAVING_WORLD" then
         inWorld = false
+        pendingManualTitle = nil
     elseif (event == "PLAYER_SPECIALIZATION_CHANGED" or event == "UNIT_NAME_UPDATE") and first ~= "player" then
         return
     end
