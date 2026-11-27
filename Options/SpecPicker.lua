@@ -41,17 +41,23 @@ local function CreateButton(parent, label, width, onClick)
     return button
 end
 
-local function CreateLogCheckbox(panel, settings, key, text)
+local function CreateCheckbox(panel, text, checked, onChange)
     local checkbox = CreateFrame("CheckButton", nil, panel, "UICheckButtonTemplate")
     checkbox:SetSize(22, 22)
     checkbox.label = checkbox:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
     checkbox.label:SetPoint("LEFT", checkbox, "RIGHT", 2, 0)
     checkbox.label:SetText(text)
-    checkbox:SetChecked(settings[key] == true)
+    checkbox:SetChecked(checked)
     checkbox:SetScript("OnClick", function(self)
-        settings[key] = self:GetChecked() == true
+        onChange(self:GetChecked() == true)
     end)
     return checkbox
+end
+
+local function CreateLogCheckbox(panel, settings, key, text)
+    return CreateCheckbox(panel, text, settings[key] == true, function(checked)
+        settings[key] = checked
+    end)
 end
 
 local function SetupLogHeader(panel, settings)
@@ -81,6 +87,13 @@ function addon.RegisterSpecPicker(parentCategory, picker)
     AddLabel(panel, "GameFontHighlight", "TOPLEFT", 20, -46, picker.instructions)
     if picker.getLogSettings then
         SetupLogHeader(panel, picker.getLogSettings())
+    end
+    local y = -70
+    if picker.headerCheckbox then
+        local option = picker.headerCheckbox
+        local checkbox = CreateCheckbox(panel, option.text, option.isChecked(), option.setChecked)
+        checkbox:SetPoint("TOPLEFT", 16, -64)
+        y = y - 24
     end
 
     local specRows = {}
@@ -154,7 +167,6 @@ function addon.RegisterSpecPicker(parentCategory, picker)
         end
     end
 
-    local y = -70
     for _, spec in ipairs(addon.GetSpecializations()) do
         local row = CreateRow(panel, 26, true)
         row:SetPoint("TOPLEFT", 20, y)

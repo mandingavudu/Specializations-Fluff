@@ -26,6 +26,7 @@ local baseLocale = {
     ["PET_SUMMON_EXECUTED"] = "Mascotte evocata%s.",
 
     -- Titles
+    ["SYNC_MANUAL_TITLE_CHANGES"] = "Sincronizza le modifiche manuali al titolo",
     ["TITLES"] = PAPERDOLL_SIDEBAR_TITLES or "Titoli",
     ["TITLE_PICKER_INSTRUCTIONS"] = "Scegli una specializzazione, poi seleziona un titolo.",
     ["TITLE_FOR_SPEC"] = "Titolo per %s",

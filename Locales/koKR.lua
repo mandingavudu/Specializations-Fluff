@@ -26,6 +26,7 @@ local baseLocale = {
     ["PET_SUMMON_EXECUTED"] = "애완동물을 소환했습니다%s.",
 
     -- Titles
+    ["SYNC_MANUAL_TITLE_CHANGES"] = "수동 칭호 변경 동기화",
     ["TITLES"] = PAPERDOLL_SIDEBAR_TITLES or "칭호",
     ["TITLE_PICKER_INSTRUCTIONS"] = "전문화를 선택한 다음 칭호를 선택하세요.",
     ["TITLE_FOR_SPEC"] = "%s 전문화의 칭호",
