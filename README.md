@@ -51,3 +51,7 @@ Digite `/fluff` e selecione **Títulos**.
 - Ao entrar no jogo, trocar de especialização ou alterar a atribuição ativa, o título fica pendente. Ele é aplicado quando você pressiona a próxima tecla fora de combate.
 - **Manter título atual** é a opção padrão. Selecione **Sem título** para ocultar seu título naquela especialização. **Limpar atribuição** volta à opção padrão.
 - **Mensagens no chat** vêm desativadas. Ative essa opção para receber uma mensagem quando a alteração de título entrar na fila, quando for executada ou nos dois casos.
+
+---
+
+Inspired by [AutoCompanion](https://www.curseforge.com/wow/addons/autocompanion) and [Specializations Titles](https://www.curseforge.com/wow/addons/specializations-titles).
