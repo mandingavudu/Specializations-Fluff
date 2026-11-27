@@ -7,5 +7,6 @@
 
 Core.lua
 Features\Companions.lua
+Options\SpecPicker.lua
 Options\Companions.lua
 Options.lua
