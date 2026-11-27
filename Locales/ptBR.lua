@@ -9,6 +9,9 @@ local baseLocale = {
     ["CHAT_LOGS"] = "Mensagens no chat",
     ["WHEN_QUEUED"] = "Ao enfileirar",
     ["WHEN_EXECUTED"] = "Ao executar",
+    ["SEARCH"] = SEARCH or "Procurar",
+    ["PREVIOUS"] = PREVIOUS or "Anterior",
+    ["NEXT"] = NEXT or "Próx.",
 
     -- Pets
     ["PETS"] = "Mascotes",
@@ -18,6 +21,7 @@ local baseLocale = {
     ["PET_UNAVAILABLE"] = "Mascote indisponível",
     ["NO_COLLECTED_PETS"] = "Nenhum mascote coletado disponível.",
     ["NO_PETS_MATCH"] = "Nenhum mascote corresponde à sua busca.",
+    ["LEVEL_ABBR"] = LEVEL_ABBR or "Nvl",
     ["PET_SUMMON_QUEUED"] = "Invocação de mascote na fila%s.",
     ["PET_SUMMON_EXECUTED"] = "Mascote invocado%s.",
 
