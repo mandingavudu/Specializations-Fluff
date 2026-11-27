@@ -4,8 +4,8 @@ local logFormats = GetLocale() == "ptBR" and {
     queued = "Invocação de mascote na fila%s.",
     executed = "Mascote invocado%s.",
 } or {
-    queued = "Companion summon queued%s.",
-    executed = "Companion summoned%s.",
+    queued = "Pet summon queued%s.",
+    executed = "Pet summoned%s.",
 }
 
 local EMPTY_GRACE = 1.5

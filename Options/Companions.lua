@@ -1,6 +1,6 @@
 local _, addon = ...
 local isPortuguese = GetLocale() == "ptBR"
-local title = COMPANIONS or (isPortuguese and "Mascotes" or "Companions")
+local title = isPortuguese and "Mascotes" or "Pets"
 
 local function SetupCompanionRow(row)
     row.level = row:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
@@ -23,12 +23,12 @@ end
 function addon.RegisterCompanionOptions(parentCategory)
     local category, refresh = addon.RegisterSpecPicker(parentCategory, {
         title = title,
-        instructions = isPortuguese and "Escolha uma especialização e selecione um mascote da sua coleção."
-            or "Choose a specialization, then select a companion from your collection.",
-        heading = isPortuguese and "Mascote para %s" or "Companion for %s",
-        unavailable = isPortuguese and "Mascote indisponível" or "Companion unavailable",
-        emptyCollection = isPortuguese and "Nenhum mascote coletado disponível." or "No collected companions available.",
-        noMatches = isPortuguese and "Nenhum mascote corresponde à sua busca." or "No companions match your search.",
+        instructions = isPortuguese and "Escolha uma especialização e selecione um mascote do seu Diário de Mascotes."
+            or "Choose a specialization, then select a pet from your Pet Journal.",
+        heading = isPortuguese and "Mascote para %s" or "Pet for %s",
+        unavailable = isPortuguese and "Mascote indisponível" or "Pet unavailable",
+        emptyCollection = isPortuguese and "Nenhum mascote coletado disponível." or "No collected pets available.",
+        noMatches = isPortuguese and "Nenhum mascote corresponde à sua busca." or "No pets match your search.",
         getCollection = addon.GetCompanionCollection,
         getBinding = addon.GetCompanionBinding,
         setBinding = addon.SetCompanionBinding,
