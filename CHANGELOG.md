@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.0
+
+- Assign a pet to a specialization directly from the Pet Journal. Right-click a collected pet, choose **Apply to Spec**, then select a specialization.
+- Localize settings, the Pet Journal menu, and chat messages for all Retail client languages.
+
 ## 1.1.0
 
 - Assign titles by specialization under **Titles** in `/fluff`. Choose an earned title, **No Title** to hide it, or **No-Op** to keep your current title. Changes apply on your next keypress outside combat, and titles that are already active are skipped.
