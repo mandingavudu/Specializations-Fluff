@@ -1,6 +1,8 @@
 local _, addon = ...
+local journal = C_PetJournal
 local isPortuguese = GetLocale() == "ptBR"
 local title = isPortuguese and "Mascotes" or "Pets"
+local applyToSpec = isPortuguese and "Aplicar à especialização" or "Apply to Spec"
 
 local function SetupCompanionRow(row)
     row.level = row:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
@@ -45,3 +47,27 @@ function addon.RegisterCompanionOptions(parentCategory)
     addon.RefreshCompanionOptions = refresh
     return category
 end
+
+Menu.ModifyMenu("MENU_PET_COLLECTION_PET", function(owner, rootDescription)
+    -- The list row stores the pet ID itself. Icon and pet card buttons use their parent.
+    local parent = owner:GetParent()
+    local petID = owner.petID or (parent and parent.petID)
+    if not petID or (journal.PetIsRevoked and journal.PetIsRevoked(petID)) then
+        return
+    end
+
+    local specializations = addon.GetSpecializations()
+    if #specializations == 0 then
+        return
+    end
+
+    local submenu = rootDescription:CreateButton(applyToSpec)
+    for _, spec in ipairs(specializations) do
+        submenu:CreateButton(spec.name, function(specID)
+            addon.SetCompanionBinding(specID, petID)
+            if addon.RefreshCompanionOptions then
+                addon.RefreshCompanionOptions()
+            end
+        end, spec.id)
+    end
+end)

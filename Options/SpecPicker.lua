@@ -1,5 +1,4 @@
 local _, addon = ...
-local specInfo = C_SpecializationInfo
 local pageSize = 15
 local isPortuguese = GetLocale() == "ptBR"
 local activeSuffix = isPortuguese and " (Ativa)" or " (Active)"
@@ -94,9 +93,6 @@ function addon.RegisterSpecPicker(parentCategory, picker)
     local page = 1
 
     local function RefreshSpecializations()
-        if not panel:IsVisible() then
-            return
-        end
         local activeSpecID = addon.GetActiveSpecID()
         for _, row in ipairs(specRows) do
             local binding = picker.getBinding(row.specID)
@@ -163,28 +159,24 @@ function addon.RegisterSpecPicker(parentCategory, picker)
     end
 
     local y = -70
-    local _, _, classID = UnitClass("player")
-    for index = 1, specInfo.GetNumSpecializationsForClassID(classID) do
-        local id, name, _, icon = specInfo.GetSpecializationInfo(index)
-        if id and id > 0 and name then
-            local row = CreateRow(panel, 26, true)
-            row:SetPoint("TOPLEFT", 20, y)
-            row:SetPoint("TOPRIGHT", -20, y)
-            row.icon:SetTexture(icon)
-            row.specID, row.specName = id, name
-            row.label:SetWidth(190)
-            row.binding = AddLabel(row, "GameFontHighlightSmall", "LEFT", 236, 0)
-            row.binding:SetPoint("RIGHT", -8, 0)
-            row.binding:SetJustifyH("LEFT")
-            row.binding:SetWordWrap(false)
-            row:SetScript("OnClick", function()
-                SelectSpec(row)
-                RefreshSpecializations()
-                RefreshResults()
-            end)
-            specRows[#specRows + 1] = row
-            y = y - 28
-        end
+    for _, spec in ipairs(addon.GetSpecializations()) do
+        local row = CreateRow(panel, 26, true)
+        row:SetPoint("TOPLEFT", 20, y)
+        row:SetPoint("TOPRIGHT", -20, y)
+        row.icon:SetTexture(spec.icon)
+        row.specID, row.specName = spec.id, spec.name
+        row.label:SetWidth(190)
+        row.binding = AddLabel(row, "GameFontHighlightSmall", "LEFT", 236, 0)
+        row.binding:SetPoint("RIGHT", -8, 0)
+        row.binding:SetJustifyH("LEFT")
+        row.binding:SetWordWrap(false)
+        row:SetScript("OnClick", function()
+            SelectSpec(row)
+            RefreshSpecializations()
+            RefreshResults()
+        end)
+        specRows[#specRows + 1] = row
+        y = y - 28
     end
 
     if #specRows == 0 then
@@ -275,5 +267,12 @@ function addon.RegisterSpecPicker(parentCategory, picker)
         end
     end)
 
-    return Settings.RegisterCanvasLayoutSubcategory(parentCategory, panel, picker.title), RefreshSpecializations
+    local function RefreshBindings()
+        if panel:IsVisible() then
+            RefreshSpecializations()
+            RefreshResults()
+        end
+    end
+
+    return Settings.RegisterCanvasLayoutSubcategory(parentCategory, panel, picker.title), RefreshBindings
 end
