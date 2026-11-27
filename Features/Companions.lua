@@ -9,6 +9,7 @@ local logFormats = GetLocale() == "ptBR" and {
 }
 
 local EMPTY_GRACE = 1.5
+local DISMISS_GRACE = 5
 local WORLD_GRACE = 4
 local LOGIN_GRACE = 8
 local MIN_RETRY = 5
@@ -26,8 +27,13 @@ local lastSummonAt = -math.huge
 local retryAt = 0
 local retryDelay = MIN_RETRY
 local ticker
+local maintenanceScheduled = false
 local queuedSummonGUID
 local summonRequested = false
+local requestingSummon = false
+local observedPetGUID
+local dismissedPetGUID
+local dismissalPendingUntil
 
 local function IsSecret(value)
     return issecretvalue and issecretvalue(value)
@@ -130,10 +136,15 @@ local function ApplyBinding()
     retryDelay = MIN_RETRY
 end
 
+local function ClearDismissal()
+    dismissedPetGUID, dismissalPendingUntil = nil, nil
+end
+
 function addon.SetCompanionBinding(specID, guid)
     SpecializationsFluffDB[specID] = guid
     if specID == addon.activeSpecID then
         restoreOverride = nil
+        ClearDismissal()
         bindingPending = true
     end
 end
@@ -150,6 +161,48 @@ local function CanAct()
         or IsBusy(UnitCastingInfo("player")) or IsBusy(UnitChannelInfo("player")))
 end
 
+local function ObservePetAction(guid, isDismissal)
+    if not inWorld or requestingSummon or IsSecret(guid) then
+        return
+    end
+    local current = journal.GetSummonedPetGUID()
+    if IsSecret(current) then
+        return
+    end
+
+    -- The post-hook may run before or after the journal reports the dismissal.
+    if isDismissal then
+        guid = guid or current or observedPetGUID
+    end
+    if guid and (guid == observedPetGUID or (isDismissal and guid == current))
+        and (not current or current == guid) then
+        dismissedPetGUID = guid
+        dismissalPendingUntil = current and GetTime() + DISMISS_GRACE or nil
+        applyBinding = false
+        emptySince = nil
+        queuedSummonGUID, summonRequested = nil, false
+    end
+    observedPetGUID = current
+end
+
+hooksecurefunc(journal, "SummonPetByGUID", function(guid)
+    ObservePetAction(guid, false)
+end)
+if journal.DismissSummonedPet then
+    hooksecurefunc(journal, "DismissSummonedPet", function(guid)
+        ObservePetAction(guid, true)
+    end)
+end
+hooksecurefunc("UseAction", function(slot)
+    if not inWorld or IsSecret(slot) then
+        return
+    end
+    local actionType, guid = GetActionInfo(slot)
+    if not IsSecret(actionType) and actionType == "summonpet" then
+        ObservePetAction(guid, false)
+    end
+end)
+
 local function MaintainCompanion()
     if not inWorld or InCombatLockdown() then
         return
@@ -159,6 +212,7 @@ local function MaintainCompanion()
     local specID, specChanged = addon.UpdateActiveSpecID()
     if specChanged then
         restoreOverride = nil
+        ClearDismissal()
         bindingPending = true
         if addon.RefreshCompanionOptions then
             addon.RefreshCompanionOptions()
@@ -175,6 +229,24 @@ local function MaintainCompanion()
         settleUntil = math.max(settleUntil, now + pendingSettle)
         pendingSettle = 0
     end
+
+    local current = journal.GetSummonedPetGUID()
+    if IsSecret(current) then
+        return
+    end
+    observedPetGUID = current
+    if dismissedPetGUID then
+        if not current then
+            dismissalPendingUntil = nil
+            return
+        end
+        if current == dismissedPetGUID and dismissalPendingUntil and now < dismissalPendingUntil then
+            return
+        end
+        ClearDismissal()
+        applyBinding = false
+    end
+
     if not binding or now < settleUntil then
         emptySince = nil
         if not binding then
@@ -184,10 +256,6 @@ local function MaintainCompanion()
     end
 
     local guid = restoreOverride or binding
-    local current = journal.GetSummonedPetGUID()
-    if IsSecret(current) then
-        return
-    end
 
     if current == guid or (current and not applyBinding) then
         local confirmed = current == queuedSummonGUID and summonRequested
@@ -235,7 +303,20 @@ local function MaintainCompanion()
     retryAt = now + retryDelay
     retryDelay = math.min(retryDelay * 2, MAX_RETRY)
     summonRequested = true
+    requestingSummon = true
     journal.SummonPetByGUID(guid)
+    requestingSummon = false
+end
+
+local function ScheduleMaintenance()
+    if not maintenanceScheduled and inWorld and not InCombatLockdown() then
+        maintenanceScheduled = true
+        -- Companion updates can fire inside a journal call, before its post-hook.
+        C_Timer.After(0, function()
+            maintenanceScheduled = false
+            MaintainCompanion()
+        end)
+    end
 end
 
 local function StartMaintenance()
@@ -276,6 +357,7 @@ events:SetScript("OnEvent", function(_, event, first, second)
         SettleFor((first or second) and LOGIN_GRACE or WORLD_GRACE)
         bindingPending = true
         StartMaintenance()
+        MaintainCompanion()
     elseif event == "PLAYER_LEAVING_WORLD" then
         inWorld = false
         openingPetBattle = false
@@ -295,6 +377,6 @@ events:SetScript("OnEvent", function(_, event, first, second)
         StartMaintenance()
         MaintainCompanion()
     elseif event == "COMPANION_UPDATE" then
-        MaintainCompanion()
+        ScheduleMaintenance()
     end
 end)
