@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.0
+
+- Assign titles by specialization under **Titles** in `/fluff`. Choose an earned title, **No Title** to hide it, or **No-Op** to keep your current title. Changes apply on your next keypress outside combat, and titles that are already active are skipped.
+- Enable optional chat messages for queued and completed title changes or pet summons. Each settings page has its own controls, and logging is off by default.
+- Manually dismissed pets stay dismissed across loading screens until you summon a pet, switch specializations, edit the active assignment, or reload.
+- The companion pet settings page is now called **Pets** in English.
+
 ## 1.0.1
 
 - Add an MIT license with the 2026 mandingavudu copyright notice.
