@@ -9,6 +9,7 @@ local baseLocale = {
     ["CHAT_LOGS"] = "聊天框消息",
     ["WHEN_QUEUED"] = "加入队列时",
     ["WHEN_EXECUTED"] = "执行时",
+    ["WHEN_SYNCED"] = "同步时",
     ["SEARCH"] = SEARCH or "搜索",
     ["PREVIOUS"] = PREVIOUS or "返回",
     ["NEXT"] = NEXT or "下一页",
@@ -36,6 +37,7 @@ local baseLocale = {
     ["NO_TITLE"] = PLAYER_TITLE_NONE or "无头衔",
     ["TITLE_CHANGE_QUEUED"] = "头衔变更已加入队列（%s）。",
     ["TITLE_CHANGE_EXECUTED"] = "已更改头衔（%s）。",
+    ["TITLE_CHANGE_SYNCED"] = "已保存手动更改的头衔（%s）。",
 }
 
 addon:RegisterLocale("zhCN", baseLocale)

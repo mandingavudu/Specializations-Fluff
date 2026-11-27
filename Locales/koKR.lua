@@ -9,6 +9,7 @@ local baseLocale = {
     ["CHAT_LOGS"] = "대화창 메시지",
     ["WHEN_QUEUED"] = "대기열 등록 시",
     ["WHEN_EXECUTED"] = "실행 시",
+    ["WHEN_SYNCED"] = "동기화 시",
     ["SEARCH"] = SEARCH or "검색",
     ["PREVIOUS"] = PREVIOUS or "이전",
     ["NEXT"] = NEXT or "다음",
@@ -36,6 +37,7 @@ local baseLocale = {
     ["NO_TITLE"] = PLAYER_TITLE_NONE or "칭호 없음",
     ["TITLE_CHANGE_QUEUED"] = "칭호 변경이 대기열에 등록되었습니다 (%s).",
     ["TITLE_CHANGE_EXECUTED"] = "칭호를 변경했습니다 (%s).",
+    ["TITLE_CHANGE_SYNCED"] = "수동으로 변경한 칭호를 저장했습니다 (%s).",
 }
 
 addon:RegisterLocale("koKR", baseLocale)

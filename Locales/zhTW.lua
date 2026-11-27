@@ -9,6 +9,7 @@ local baseLocale = {
     ["CHAT_LOGS"] = "聊天視窗訊息",
     ["WHEN_QUEUED"] = "加入佇列時",
     ["WHEN_EXECUTED"] = "執行時",
+    ["WHEN_SYNCED"] = "同步時",
     ["SEARCH"] = SEARCH or "搜尋",
     ["PREVIOUS"] = PREVIOUS or "往前",
     ["NEXT"] = NEXT or "繼續",
@@ -36,6 +37,7 @@ local baseLocale = {
     ["NO_TITLE"] = PLAYER_TITLE_NONE or "無頭銜",
     ["TITLE_CHANGE_QUEUED"] = "頭銜變更已加入佇列（%s）。",
     ["TITLE_CHANGE_EXECUTED"] = "已變更頭銜（%s）。",
+    ["TITLE_CHANGE_SYNCED"] = "已儲存手動變更的頭銜（%s）。",
 }
 
 addon:RegisterLocale("zhTW", baseLocale)
