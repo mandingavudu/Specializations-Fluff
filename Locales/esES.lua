@@ -1,0 +1,40 @@
+local _, addon = ...
+
+local baseLocale = {
+    -- Shared picker labels
+    ["ACTIVE_SPEC_SUFFIX"] = " (Activa)",
+    ["UNASSIGNED"] = "Sin asignar",
+    ["CLEAR_ASSIGNMENT"] = "Quitar asignación",
+    ["NO_SPECIALIZATIONS"] = "No hay especializaciones disponibles.",
+    ["CHAT_LOGS"] = "Mensajes de chat",
+    ["WHEN_QUEUED"] = "Al poner en cola",
+    ["WHEN_EXECUTED"] = "Al ejecutar",
+    ["SEARCH"] = SEARCH or "Buscar",
+    ["PREVIOUS"] = PREVIOUS or "Anterior",
+    ["NEXT"] = NEXT or "Sig.",
+
+    -- Pets
+    ["PETS"] = PETS or "Mascotas",
+    ["APPLY_TO_SPEC"] = "Asignar a una especialización",
+    ["PET_PICKER_INSTRUCTIONS"] = "Elige una especialización y selecciona una mascota de tu diario de mascotas.",
+    ["PET_FOR_SPEC"] = "Mascota para %s",
+    ["PET_UNAVAILABLE"] = "Mascota no disponible",
+    ["NO_COLLECTED_PETS"] = "No hay mascotas disponibles en tu colección.",
+    ["NO_PETS_MATCH"] = "Ninguna mascota coincide con tu búsqueda.",
+    ["LEVEL_ABBR"] = LEVEL_ABBR or "Niv",
+    ["PET_SUMMON_QUEUED"] = "Invocación de mascota en cola%s.",
+    ["PET_SUMMON_EXECUTED"] = "Mascota invocada%s.",
+
+    -- Titles
+    ["TITLES"] = PAPERDOLL_SIDEBAR_TITLES or "Títulos",
+    ["TITLE_PICKER_INSTRUCTIONS"] = "Elige una especialización y selecciona un título.",
+    ["TITLE_FOR_SPEC"] = "Título para %s",
+    ["TITLE_UNAVAILABLE"] = "Título no disponible",
+    ["NO_TITLES_MATCH"] = "Ningún título coincide con tu búsqueda.",
+    ["KEEP_CURRENT_TITLE"] = "Conservar el título actual",
+    ["NO_TITLE"] = PLAYER_TITLE_NONE or "Sin título",
+    ["TITLE_CHANGE_QUEUED"] = "Cambio de título en cola (%s).",
+    ["TITLE_CHANGE_EXECUTED"] = "Cambio de título aplicado (%s).",
+}
+
+addon:RegisterLocale("esES", baseLocale)
