@@ -32,6 +32,7 @@ function addon.RegisterCompanionOptions(parentCategory)
         getCollection = addon.GetCompanionCollection,
         getBinding = addon.GetCompanionBinding,
         setBinding = addon.SetCompanionBinding,
+        getLogSettings = addon.GetCompanionLogSettings,
         resultIcons = true,
         resultLabelInset = 72,
         setupResultRow = SetupCompanionRow,

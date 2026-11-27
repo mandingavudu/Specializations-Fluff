@@ -1,5 +1,12 @@
 local _, addon = ...
 local journal = C_PetJournal
+local logFormats = GetLocale() == "ptBR" and {
+    queued = "Invocação de mascote na fila%s.",
+    executed = "Mascote invocado%s.",
+} or {
+    queued = "Companion summon queued%s.",
+    executed = "Companion summoned%s.",
+}
 
 local EMPTY_GRACE = 1.5
 local WORLD_GRACE = 4
@@ -19,9 +26,42 @@ local lastSummonAt = -math.huge
 local retryAt = 0
 local retryDelay = MIN_RETRY
 local ticker
+local queuedSummonGUID
+local summonRequested = false
 
 local function IsSecret(value)
     return issecretvalue and issecretvalue(value)
+end
+
+local function GetCompanionName(customName, species)
+    if customName and customName ~= "" and customName ~= species then
+        return string.format("%s (%s)", customName, species)
+    end
+    return species
+end
+
+function addon.GetCompanionLogSettings()
+    return addon.GetChatLogSettings("companionLogSettings")
+end
+
+local function LogSummon(kind, guid)
+    local settings = addon.GetCompanionLogSettings()
+    if settings.enabled == true and settings[kind] == true then
+        local _, customName, _, _, _, _, _, species = journal.GetPetInfoByPetID(guid)
+        local suffix = ""
+        if not IsSecret(species) and species then
+            local name = GetCompanionName(not IsSecret(customName) and customName, species)
+            suffix = " (" .. name .. ")"
+        end
+        addon.WriteChatLog(logFormats[kind]:format(suffix))
+    end
+end
+
+local function QueueSummon(guid)
+    if queuedSummonGUID ~= guid then
+        queuedSummonGUID, summonRequested = guid, false
+        LogSummon("queued", guid)
+    end
 end
 
 function addon.GetCompanionCollection()
@@ -30,10 +70,7 @@ function addon.GetCompanionCollection()
     for _, guid in ipairs(journal.GetOwnedPetIDs() or {}) do
         local _, customName, level, _, _, _, isFavorite, species, icon = journal.GetPetInfoByPetID(guid)
         if species and not (journal.PetIsRevoked and journal.PetIsRevoked(guid)) then
-            local name = species
-            if customName and customName ~= "" and customName ~= species then
-                name = string.format("%s (%s)", customName, species)
-            end
+            local name = GetCompanionName(customName, species)
             local pet = {
                 id = guid,
                 name = name,
@@ -140,6 +177,9 @@ local function MaintainCompanion()
     end
     if not binding or now < settleUntil then
         emptySince = nil
+        if not binding then
+            queuedSummonGUID, summonRequested = nil, false
+        end
         return
     end
 
@@ -150,6 +190,11 @@ local function MaintainCompanion()
     end
 
     if current == guid or (current and not applyBinding) then
+        local confirmed = current == queuedSummonGUID and summonRequested
+        queuedSummonGUID, summonRequested = nil, false
+        if confirmed then
+            LogSummon("executed", current)
+        end
         -- Once the binding is applied, an observed pet takes precedence for restores.
         restoreOverride = current ~= binding and current or nil
         applyBinding = false
@@ -161,6 +206,9 @@ local function MaintainCompanion()
 
     if not CanAct() then
         emptySince = nil
+        if applyBinding then
+            QueueSummon(guid)
+        end
         return
     end
 
@@ -173,6 +221,7 @@ local function MaintainCompanion()
         end
     end
 
+    QueueSummon(guid)
     -- Allow a pending summon to land before retrying. Summoning the same pet toggles it off.
     if now < retryAt or now - lastSummonAt < MIN_RETRY then
         return
@@ -185,6 +234,7 @@ local function MaintainCompanion()
     lastSummonAt = now
     retryAt = now + retryDelay
     retryDelay = math.min(retryDelay * 2, MAX_RETRY)
+    summonRequested = true
     journal.SummonPetByGUID(guid)
 end
 

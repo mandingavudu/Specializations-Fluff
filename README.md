@@ -15,6 +15,7 @@ Type `/fluff` and select **Companions**.
 - When the companion slot becomes empty, the addon gives the game a chance to restore the pet, then summons your most recent choice. Manually dismissing a pet also leaves the slot empty.
 - Companion checks pause during combat. When combat ends, the addon handles queued triggers using your current specialization and assignment.
 - Summoning also waits while you're dead, AFK, flying, stealthed, casting, or in a pet battle. An unavailable companion can be replaced or cleared in settings.
+- **Chat logs** are off by default. Turn them on to see when a companion summon is queued, completed, or both.
 
 ### Titles
 
@@ -40,6 +41,7 @@ Digite `/fluff` e selecione **Mascotes**.
 - Quando você fica sem um mascote invocado, o addon espera um pouco para dar ao jogo a chance de trazê-lo de volta. Se o jogo não o trouxer, o addon invoca o último mascote escolhido. Dispensar um mascote manualmente também aciona esse comportamento.
 - As verificações de mascote ficam pausadas em combate. Quando o combate termina, o addon processa os eventos pendentes com base na especialização ativa e no mascote definido para ela.
 - O addon também espera para invocar enquanto você estiver morto, ausente, voando, em furtividade, lançando uma magia ou em uma batalha de mascotes. Se um mascote estiver indisponível, você pode substituí-lo ou limpar a escolha nas configurações.
+- **Mensagens no chat** vêm desativadas. Ative essa opção para receber uma mensagem quando a invocação entrar na fila, quando o mascote for invocado ou nos dois casos.
 
 ### Títulos
 
