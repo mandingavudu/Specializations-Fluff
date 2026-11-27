@@ -46,11 +46,47 @@ local function CreateButton(parent, label, width, onClick)
     return button
 end
 
+local function CreateLogCheckbox(panel, settings, key, text)
+    local checkbox = CreateFrame("CheckButton", nil, panel, "UICheckButtonTemplate")
+    checkbox:SetSize(22, 22)
+    checkbox.label = checkbox:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
+    checkbox.label:SetPoint("LEFT", checkbox, "RIGHT", 2, 0)
+    checkbox.label:SetText(text)
+    checkbox:SetChecked(settings[key] == true)
+    checkbox:SetScript("OnClick", function(self)
+        settings[key] = self:GetChecked() == true
+    end)
+    return checkbox
+end
+
+local function SetupLogHeader(panel, settings)
+    local master = CreateLogCheckbox(panel, settings, "enabled", isPortuguese and "Mensagens no chat" or "Chat logs")
+    local queued = CreateLogCheckbox(panel, settings, "queued", isPortuguese and "Ao enfileirar" or "When queued")
+    local executed = CreateLogCheckbox(panel, settings, "executed", isPortuguese and "Ao executar" or "When executed")
+    master:SetPoint("TOPLEFT", 220, -13)
+    queued:SetPoint("LEFT", master.label, "RIGHT", 14, 0)
+    executed:SetPoint("LEFT", queued.label, "RIGHT", 14, 0)
+
+    local function RefreshLogControls()
+        local enabled = settings.enabled == true
+        for _, checkbox in ipairs({ queued, executed }) do
+            checkbox:SetEnabled(enabled)
+            checkbox:SetAlpha(enabled and 1 or 0.5)
+        end
+    end
+
+    master:HookScript("OnClick", RefreshLogControls)
+    RefreshLogControls()
+end
+
 function addon.RegisterSpecPicker(parentCategory, picker)
     local panel = CreateFrame("Frame")
     panel:Hide()
     AddLabel(panel, "GameFontNormalLarge", "TOPLEFT", 20, -18, picker.title)
     AddLabel(panel, "GameFontHighlight", "TOPLEFT", 20, -46, picker.instructions)
+    if picker.getLogSettings then
+        SetupLogHeader(panel, picker.getLogSettings())
+    end
 
     local specRows = {}
     local selectedSpecID

@@ -2,6 +2,19 @@ local addonName, addon = ...
 local specInfo = C_SpecializationInfo
 local optionsPending = false
 
+function addon.GetChatLogSettings(key)
+    local settings = SpecializationsFluffDB[key]
+    if type(settings) ~= "table" then
+        settings = { enabled = false, queued = true, executed = true }
+        SpecializationsFluffDB[key] = settings
+    end
+    return settings
+end
+
+function addon.WriteChatLog(message)
+    DEFAULT_CHAT_FRAME:AddMessage("[Specializations Fluff] " .. message)
+end
+
 function addon.GetActiveSpecID()
     if InCombatLockdown() then
         return addon.activeSpecID

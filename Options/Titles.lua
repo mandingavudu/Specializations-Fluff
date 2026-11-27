@@ -14,6 +14,7 @@ function addon.RegisterTitleOptions(parentCategory)
         getBinding = addon.GetTitleBinding,
         setBinding = addon.SetTitleBinding,
         defaultBinding = addon.TITLE_NO_OP,
+        getLogSettings = addon.GetTitleLogSettings,
         events = { "KNOWN_TITLES_UPDATE" },
     })
     addon.RefreshTitleOptions = refresh
