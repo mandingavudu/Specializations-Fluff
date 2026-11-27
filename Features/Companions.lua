@@ -1,11 +1,9 @@
 local _, addon = ...
+local L = addon.L
 local journal = C_PetJournal
-local logFormats = GetLocale() == "ptBR" and {
-    queued = "Invocação de mascote na fila%s.",
-    executed = "Mascote invocado%s.",
-} or {
-    queued = "Pet summon queued%s.",
-    executed = "Pet summoned%s.",
+local logFormats = {
+    queued = L.PET_SUMMON_QUEUED,
+    executed = L.PET_SUMMON_EXECUTED,
 }
 
 local EMPTY_GRACE = 1.5

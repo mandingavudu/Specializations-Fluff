@@ -1,15 +1,11 @@
 local _, addon = ...
+local L = addon.L
 
 local NO_OP = 0
 local NO_TITLE = -1
-local isPortuguese = GetLocale() == "ptBR"
-local noTitleLabel = PLAYER_TITLE_NONE or (isPortuguese and "Sem título" or "No Title")
-local logFormats = isPortuguese and {
-    queued = "Alteração de título na fila (%s).",
-    executed = "Alteração de título executada (%s).",
-} or {
-    queued = "Title change queued (%s).",
-    executed = "Title change executed (%s).",
+local logFormats = {
+    queued = L.TITLE_CHANGE_QUEUED,
+    executed = L.TITLE_CHANGE_EXECUTED,
 }
 local inWorld = false
 local activeSpecID
@@ -59,9 +55,8 @@ function addon.GetTitleCollection()
         return a.id < b.id
     end)
 
-    local unchanged = isPortuguese and "Manter título atual" or "No-Op"
-    local noOp = { id = NO_OP, label = unchanged, searchName = strlower(unchanged) }
-    local noTitle = { id = NO_TITLE, label = noTitleLabel, searchName = strlower(noTitleLabel) }
+    local noOp = { id = NO_OP, label = L.KEEP_CURRENT_TITLE, searchName = strlower(L.KEEP_CURRENT_TITLE) }
+    local noTitle = { id = NO_TITLE, label = L.NO_TITLE, searchName = strlower(L.NO_TITLE) }
     table.insert(titles, 1, noTitle)
     table.insert(titles, 1, noOp)
     titlesByID[NO_OP] = noOp
@@ -111,7 +106,7 @@ local function ResolvePendingTitle()
         assignmentPending = false
         return
     end
-    local titleName = titleID == NO_TITLE and noTitleLabel or GetPlayerTitleName(titleID)
+    local titleName = titleID == NO_TITLE and L.NO_TITLE or GetPlayerTitleName(titleID)
     if titleName then
         return titleID, titleName
     end

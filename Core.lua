@@ -1,4 +1,5 @@
 local addonName, addon = ...
+local L = addon.L
 local specInfo = C_SpecializationInfo
 local optionsPending = false
 
@@ -12,7 +13,7 @@ function addon.GetChatLogSettings(key)
 end
 
 function addon.WriteChatLog(message)
-    DEFAULT_CHAT_FRAME:AddMessage("[Specializations Fluff] " .. message)
+    DEFAULT_CHAT_FRAME:AddMessage(L.CHAT_PREFIX .. message)
 end
 
 function addon.GetSpecializations()

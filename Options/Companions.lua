@@ -1,8 +1,6 @@
 local _, addon = ...
+local L = addon.L
 local journal = C_PetJournal
-local isPortuguese = GetLocale() == "ptBR"
-local title = isPortuguese and "Mascotes" or "Pets"
-local applyToSpec = isPortuguese and "Aplicar à especialização" or "Apply to Spec"
 
 local function SetupCompanionRow(row)
     row.level = row:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
@@ -18,19 +16,18 @@ local function UpdateCompanionRow(row, pet)
     row.favoriteStar:SetShown(pet and pet.isFavorite or false)
     if pet then
         row.icon:SetTexture(pet.icon)
-        row.level:SetText(pet.level > 0 and string.format("%s %d", LEVEL_ABBR or "Lv.", pet.level) or "")
+        row.level:SetText(pet.level > 0 and string.format("%s %d", L.LEVEL_ABBR, pet.level) or "")
     end
 end
 
 function addon.RegisterCompanionOptions(parentCategory)
     local category, refresh = addon.RegisterSpecPicker(parentCategory, {
-        title = title,
-        instructions = isPortuguese and "Escolha uma especialização e selecione um mascote do seu Diário de Mascotes."
-            or "Choose a specialization, then select a pet from your Pet Journal.",
-        heading = isPortuguese and "Mascote para %s" or "Pet for %s",
-        unavailable = isPortuguese and "Mascote indisponível" or "Pet unavailable",
-        emptyCollection = isPortuguese and "Nenhum mascote coletado disponível." or "No collected pets available.",
-        noMatches = isPortuguese and "Nenhum mascote corresponde à sua busca." or "No pets match your search.",
+        title = L.PETS,
+        instructions = L.PET_PICKER_INSTRUCTIONS,
+        heading = L.PET_FOR_SPEC,
+        unavailable = L.PET_UNAVAILABLE,
+        emptyCollection = L.NO_COLLECTED_PETS,
+        noMatches = L.NO_PETS_MATCH,
         getCollection = addon.GetCompanionCollection,
         getBinding = addon.GetCompanionBinding,
         setBinding = addon.SetCompanionBinding,
@@ -61,7 +58,7 @@ Menu.ModifyMenu("MENU_PET_COLLECTION_PET", function(owner, rootDescription)
         return
     end
 
-    local submenu = rootDescription:CreateButton(applyToSpec)
+    local submenu = rootDescription:CreateButton(L.APPLY_TO_SPEC)
     for _, spec in ipairs(specializations) do
         submenu:CreateButton(spec.name, function(specID)
             addon.SetCompanionBinding(specID, petID)

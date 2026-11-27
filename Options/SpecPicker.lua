@@ -1,10 +1,6 @@
 local _, addon = ...
+local L = addon.L
 local pageSize = 15
-local isPortuguese = GetLocale() == "ptBR"
-local activeSuffix = isPortuguese and " (Ativa)" or " (Active)"
-local unassigned = isPortuguese and "Sem atribuição" or "Unassigned"
-local clearAssignment = isPortuguese and "Limpar atribuição" or "Clear assignment"
-local noSpecializations = isPortuguese and "Nenhuma especialização disponível." or "No specializations available."
 
 local function AddLabel(parent, font, point, x, y, text)
     local label = parent:CreateFontString(nil, "ARTWORK", font)
@@ -59,9 +55,9 @@ local function CreateLogCheckbox(panel, settings, key, text)
 end
 
 local function SetupLogHeader(panel, settings)
-    local master = CreateLogCheckbox(panel, settings, "enabled", isPortuguese and "Mensagens no chat" or "Chat logs")
-    local queued = CreateLogCheckbox(panel, settings, "queued", isPortuguese and "Ao enfileirar" or "When queued")
-    local executed = CreateLogCheckbox(panel, settings, "executed", isPortuguese and "Ao executar" or "When executed")
+    local master = CreateLogCheckbox(panel, settings, "enabled", L.CHAT_LOGS)
+    local queued = CreateLogCheckbox(panel, settings, "queued", L.WHEN_QUEUED)
+    local executed = CreateLogCheckbox(panel, settings, "executed", L.WHEN_EXECUTED)
     master:SetPoint("TOPLEFT", 220, -13)
     queued:SetPoint("LEFT", master.label, "RIGHT", 14, 0)
     executed:SetPoint("LEFT", queued.label, "RIGHT", 14, 0)
@@ -97,9 +93,9 @@ function addon.RegisterSpecPicker(parentCategory, picker)
         for _, row in ipairs(specRows) do
             local binding = picker.getBinding(row.specID)
             local entry = entriesByID[binding]
-            row.label:SetText(row.specID == activeSpecID and (row.specName .. activeSuffix) or row.specName)
+            row.label:SetText(row.specID == activeSpecID and (row.specName .. L.ACTIVE_SPEC_SUFFIX) or row.specName)
             row.selection:SetShown(row.specID == selectedSpecID)
-            row.binding:SetText(entry and entry.label or (binding ~= nil and picker.unavailable or unassigned))
+            row.binding:SetText(entry and entry.label or (binding ~= nil and picker.unavailable or L.UNASSIGNED))
         end
     end
 
@@ -180,16 +176,16 @@ function addon.RegisterSpecPicker(parentCategory, picker)
     end
 
     if #specRows == 0 then
-        AddLabel(panel, "GameFontDisable", "TOPLEFT", 20, y, noSpecializations)
+        AddLabel(panel, "GameFontDisable", "TOPLEFT", 20, y, L.NO_SPECIALIZATIONS)
         return Settings.RegisterCanvasLayoutSubcategory(parentCategory, panel, picker.title), RefreshSpecializations
     end
 
     panel.pickerTitle = AddLabel(panel, "GameFontNormal", "TOPLEFT", 20, y - 12)
-    panel.clear = CreateButton(panel, clearAssignment, 126, function() SetBinding(nil) end)
+    panel.clear = CreateButton(panel, L.CLEAR_ASSIGNMENT, 126, function() SetBinding(nil) end)
     panel.clear:SetPoint("TOPRIGHT", -20, y - 9)
     panel.clear:SetEnabled(false)
 
-    AddLabel(panel, "GameFontHighlightSmall", "TOPLEFT", 20, y - 44, SEARCH or "Search")
+    AddLabel(panel, "GameFontHighlightSmall", "TOPLEFT", 20, y - 44, L.SEARCH)
     panel.search = CreateFrame("EditBox", nil, panel, "InputBoxTemplate")
     panel.search:SetSize(230, 24)
     panel.search:SetPoint("TOPLEFT", 76, y - 38)
@@ -220,12 +216,12 @@ function addon.RegisterSpecPicker(parentCategory, picker)
 
     panel.empty = AddLabel(panel, "GameFontDisable", "TOPLEFT", 20, y - 72)
     local controlsY = resultsY - pageSize * resultStride - 6
-    panel.previous = CreateButton(panel, PREVIOUS or "Previous", 90, function()
+    panel.previous = CreateButton(panel, L.PREVIOUS, 90, function()
         page = page - 1
         RefreshResults()
     end)
     panel.previous:SetPoint("TOPLEFT", 20, controlsY)
-    panel.next = CreateButton(panel, NEXT or "Next", 90, function()
+    panel.next = CreateButton(panel, L.NEXT, 90, function()
         page = page + 1
         RefreshResults()
     end)
