@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.4.0
+
+- Pet and title chat-log settings and **Sync manual title changes** now apply account-wide. The first character you load after updating supplies the starting preferences.
+- Enable **When synced** in the **Titles** chat-log settings to get a message when a manual title change updates the saved assignment for your active specialization. This option is off by default.
+
 ## 1.3.0
 
 - Enable **Sync manual title changes** under **Titles** in `/fluff` to save title choices from the character window to your active specialization. Clearing your title saves **No Title**. The option is off by default.
