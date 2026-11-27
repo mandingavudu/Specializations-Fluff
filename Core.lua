@@ -4,10 +4,16 @@ local specInfo = C_SpecializationInfo
 local optionsPending = false
 
 function addon.GetChatLogSettings(key)
-    local settings = SpecializationsFluffDB[key]
+    local settings = SpecializationsFluffAccountDB[key]
     if type(settings) ~= "table" then
-        settings = { enabled = false, queued = true, executed = true }
-        SpecializationsFluffDB[key] = settings
+        -- The first character to load supplies the starting preferences.
+        local previous = SpecializationsFluffDB[key]
+        if type(previous) == "table" then
+            settings = { enabled = previous.enabled, queued = previous.queued, executed = previous.executed }
+        else
+            settings = { enabled = false, queued = true, executed = true }
+        end
+        SpecializationsFluffAccountDB[key] = settings
     end
     return settings
 end
@@ -56,8 +62,14 @@ events:RegisterEvent("PLAYER_REGEN_ENABLED")
 
 events:SetScript("OnEvent", function(self, event, first)
     if event == "ADDON_LOADED" and first == addonName then
+        if type(SpecializationsFluffAccountDB) ~= "table" then
+            SpecializationsFluffAccountDB = {}
+        end
         if type(SpecializationsFluffDB) ~= "table" then
             SpecializationsFluffDB = type(SpecCompanionDB) == "table" and SpecCompanionDB or {}
+        end
+        if type(SpecializationsFluffAccountDB.syncManualTitleChanges) ~= "boolean" then
+            SpecializationsFluffAccountDB.syncManualTitleChanges = SpecializationsFluffDB.syncManualTitleChanges == true
         end
         self:UnregisterEvent(event)
     elseif event == "PLAYER_LOGIN" then
