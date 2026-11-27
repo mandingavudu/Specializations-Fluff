@@ -18,6 +18,16 @@ local function OpenPendingOptions()
     end
 end
 
+local function AddPageButton(panel, page, y)
+    local button = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
+    button:SetPoint("TOPLEFT", 20, y)
+    button:SetSize(160, 24)
+    button:SetText(categories[page]:GetName())
+    button:SetScript("OnClick", function()
+        OpenOptions(page)
+    end)
+end
+
 SLASH_SPECIALIZATIONSFLUFF1 = "/fluff"
 SLASH_SPECIALIZATIONSFLUFF2 = "/speccompanion"
 SlashCmdList.SPECIALIZATIONSFLUFF = function()
@@ -34,17 +44,11 @@ function addon.RegisterOptions()
     heading:SetText(title)
 
     local category = Settings.RegisterCanvasLayoutCategory(panel, title)
-    local companions = addon.RegisterCompanionOptions(category)
     categories.main = category
-    categories.companions = companions
-
-    local button = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
-    button:SetPoint("TOPLEFT", 20, -46)
-    button:SetSize(160, 24)
-    button:SetText(companions:GetName())
-    button:SetScript("OnClick", function()
-        OpenOptions("companions")
-    end)
+    categories.companions = addon.RegisterCompanionOptions(category)
+    categories.titles = addon.RegisterTitleOptions(category)
+    AddPageButton(panel, "companions", -46)
+    AddPageButton(panel, "titles", -76)
 
     Settings.RegisterAddOnCategory(category)
     panel:RegisterEvent("PLAYER_REGEN_ENABLED")
