@@ -9,6 +9,7 @@ local baseLocale = {
     ["CHAT_LOGS"] = "Сообщения в чате",
     ["WHEN_QUEUED"] = "В очереди",
     ["WHEN_EXECUTED"] = "При выполнении",
+    ["WHEN_SYNCED"] = "При синхронизации",
     ["SEARCH"] = SEARCH or "Поиск",
     ["PREVIOUS"] = PREVIOUS or "Назад",
     ["NEXT"] = NEXT or "Далее",
@@ -36,6 +37,7 @@ local baseLocale = {
     ["NO_TITLE"] = PLAYER_TITLE_NONE or "Без звания",
     ["TITLE_CHANGE_QUEUED"] = "Изменение звания поставлено в очередь (%s).",
     ["TITLE_CHANGE_EXECUTED"] = "Звание изменено (%s).",
+    ["TITLE_CHANGE_SYNCED"] = "Ручная смена звания сохранена (%s).",
 }
 
 addon:RegisterLocale("ruRU", baseLocale)

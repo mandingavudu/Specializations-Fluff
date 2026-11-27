@@ -60,17 +60,23 @@ local function CreateLogCheckbox(panel, settings, key, text)
     end)
 end
 
-local function SetupLogHeader(panel, settings)
+local function SetupLogHeader(panel, settings, logSync)
     local master = CreateLogCheckbox(panel, settings, "enabled", L.CHAT_LOGS)
     local queued = CreateLogCheckbox(panel, settings, "queued", L.WHEN_QUEUED)
     local executed = CreateLogCheckbox(panel, settings, "executed", L.WHEN_EXECUTED)
-    master:SetPoint("TOPLEFT", 220, -13)
+    master:SetPoint("TOPLEFT", logSync and 160 or 220, -13)
     queued:SetPoint("LEFT", master.label, "RIGHT", 14, 0)
     executed:SetPoint("LEFT", queued.label, "RIGHT", 14, 0)
+    local logControls = { queued, executed }
+    if logSync then
+        local synced = CreateLogCheckbox(panel, settings, "synced", L.WHEN_SYNCED)
+        synced:SetPoint("LEFT", executed.label, "RIGHT", 14, 0)
+        logControls[#logControls + 1] = synced
+    end
 
     local function RefreshLogControls()
         local enabled = settings.enabled == true
-        for _, checkbox in ipairs({ queued, executed }) do
+        for _, checkbox in ipairs(logControls) do
             checkbox:SetEnabled(enabled)
             checkbox:SetAlpha(enabled and 1 or 0.5)
         end
@@ -86,7 +92,7 @@ function addon.RegisterSpecPicker(parentCategory, picker)
     AddLabel(panel, "GameFontNormalLarge", "TOPLEFT", 20, -18, picker.title)
     AddLabel(panel, "GameFontHighlight", "TOPLEFT", 20, -46, picker.instructions)
     if picker.getLogSettings then
-        SetupLogHeader(panel, picker.getLogSettings())
+        SetupLogHeader(panel, picker.getLogSettings(), picker.logSync)
     end
     local y = -70
     if picker.headerCheckbox then

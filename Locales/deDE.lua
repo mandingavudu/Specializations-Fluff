@@ -9,6 +9,7 @@ local baseLocale = {
     ["CHAT_LOGS"] = "Chatmeldungen",
     ["WHEN_QUEUED"] = "Beim Vormerken",
     ["WHEN_EXECUTED"] = "Bei Ausführung",
+    ["WHEN_SYNCED"] = "Bei Synchronisierung",
     ["SEARCH"] = SEARCH or "Suchen",
     ["PREVIOUS"] = PREVIOUS or "Vorherige",
     ["NEXT"] = NEXT or "Weiter",
@@ -36,6 +37,7 @@ local baseLocale = {
     ["NO_TITLE"] = PLAYER_TITLE_NONE or "Kein Titel",
     ["TITLE_CHANGE_QUEUED"] = "Titelwechsel vorgemerkt (%s).",
     ["TITLE_CHANGE_EXECUTED"] = "Titelwechsel ausgeführt (%s).",
+    ["TITLE_CHANGE_SYNCED"] = "Manueller Titelwechsel gespeichert (%s).",
 }
 
 addon:RegisterLocale("deDE", baseLocale)

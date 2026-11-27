@@ -7,6 +7,7 @@ local MANUAL_TITLE_TIMEOUT = 3
 local logFormats = {
     queued = L.TITLE_CHANGE_QUEUED,
     executed = L.TITLE_CHANGE_EXECUTED,
+    synced = L.TITLE_CHANGE_SYNCED,
 }
 local inWorld = false
 local activeSpecID
@@ -162,7 +163,12 @@ local function ConfirmManualTitle()
         pendingManualTitle = nil
         activeSpecID = specID
         assignmentPending = false
-        SaveTitleBinding(specID, change.titleID)
+        local titleID = change.titleID
+        if addon.GetTitleBinding(specID) ~= titleID then
+            SaveTitleBinding(specID, titleID)
+            local titleName = titleID == NO_TITLE and L.NO_TITLE or GetPlayerTitleName(titleID)
+            LogTitleChange("synced", titleName or tostring(titleID))
+        end
         if addon.RefreshTitleOptions then
             addon.RefreshTitleOptions()
         end

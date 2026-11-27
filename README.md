@@ -26,7 +26,7 @@ Type `/fluff` and select **Titles**.
 - Logging in, switching specializations, or editing the active assignment queues the title. It applies on your next keypress outside combat.
 - **No-Op** is the default and keeps your current title. Select **No Title** to hide your title for a specialization. **Clear assignment** resets the specialization to **No-Op**.
 - Turn on the account-wide **Sync manual title changes** option to save title choices you make in the character window to your active specialization. Removing your title saves **No Title**.
-- **Chat logs** are account-wide and off by default. Turn them on to log when a title change is queued, executed, or both.
+- **Chat logs** are account-wide and off by default. Turn them on to log when title changes are queued or executed. Enable **When synced** to log when a manual title choice updates the saved assignment.
 
 ## Português (Brasil)
 
@@ -54,7 +54,7 @@ Digite `/fluff` e selecione **Títulos**.
 - Ao entrar no jogo, trocar de especialização ou alterar a atribuição ativa, o título fica pendente. Ele é aplicado quando você pressiona a próxima tecla fora de combate.
 - **Manter título atual** é a opção padrão. Selecione **Sem título** para ocultar seu título naquela especialização. **Limpar atribuição** volta à opção padrão.
 - Ative **Sincronizar alterações manuais de título** para salvar os títulos que você escolher na janela do personagem na especialização ativa. A opção vale para toda a conta. Ao remover o título, o addon salva **Sem título**.
-- **Mensagens no chat** vêm desativadas e a configuração vale para toda a conta. Ative essa opção para receber uma mensagem quando a alteração de título entrar na fila, quando for executada ou nos dois casos.
+- **Mensagens no chat** vêm desativadas e a configuração vale para toda a conta. Ative essa opção para receber mensagens quando alterações de título entrarem na fila ou forem executadas. Marque **Ao sincronizar** para receber uma mensagem quando uma escolha manual atualizar o título salvo.
 
 ---
 

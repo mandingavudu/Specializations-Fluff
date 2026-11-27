@@ -13,6 +13,7 @@ function addon.RegisterTitleOptions(parentCategory)
         setBinding = addon.SetTitleBinding,
         defaultBinding = addon.TITLE_NO_OP,
         getLogSettings = addon.GetTitleLogSettings,
+        logSync = true,
         headerCheckbox = {
             text = L.SYNC_MANUAL_TITLE_CHANGES,
             isChecked = addon.IsManualTitleSyncEnabled,
