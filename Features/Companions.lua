@@ -35,9 +35,9 @@ function addon.GetCompanionCollection()
                 name = string.format("%s (%s)", customName, species)
             end
             local pet = {
-                guid = guid,
+                id = guid,
                 name = name,
-                searchName = name:lower(),
+                searchName = strlower(name),
                 level = level or 0,
                 icon = icon,
                 isFavorite = isFavorite,
@@ -52,7 +52,7 @@ function addon.GetCompanionCollection()
         if a.searchName ~= b.searchName then
             return a.searchName < b.searchName
         end
-        return a.guid < b.guid
+        return a.id < b.id
     end)
 
     -- Keep each copy's number stable when favorites change.
@@ -123,7 +123,9 @@ local function MaintainCompanion()
     if specChanged then
         restoreOverride = nil
         bindingPending = true
-        addon.RefreshCompanionOptions()
+        if addon.RefreshCompanionOptions then
+            addon.RefreshCompanionOptions()
+        end
     end
     if bindingPending then
         bindingPending = false
