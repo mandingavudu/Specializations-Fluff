@@ -6,16 +6,16 @@ Specializations Fluff is a World of Warcraft Retail addon for per-specialization
 
 ### Companion Pets
 
-Type `/fluff` and select **Companions**.
+Type `/fluff` and select **Pets**.
 
-- Saves a specific companion pet from your collection for each specialization on each character.
+- Saves a specific pet from your Pet Journal for each specialization on each character.
 - Shows favorite pets first and clears the search after you select a pet.
-- Logging in, changing specializations, or editing the active assignment applies the bound companion. An unassigned specialization leaves the current companion out.
+- Logging in, changing specializations, or editing the active assignment summons the assigned pet. An unassigned specialization leaves the current pet out.
 - If you manually summon another pet, the addon remembers it for the current specialization until you switch specializations, edit the active assignment, or reload. This choice carries through loading screens during the session.
-- When the companion slot becomes empty, the addon gives the game a chance to restore the pet, then summons your most recent choice. Manually dismissing a pet also leaves the slot empty.
-- Companion checks pause during combat. When combat ends, the addon handles queued triggers using your current specialization and assignment.
-- Summoning also waits while you're dead, AFK, flying, stealthed, casting, or in a pet battle. An unavailable companion can be replaced or cleared in settings.
-- **Chat logs** are off by default. Turn them on to see when a companion summon is queued, completed, or both.
+- When the pet slot becomes empty, the addon gives the game a chance to restore the pet, then summons your most recent choice. Manually dismissing a pet also leaves the slot empty.
+- Pet checks pause during combat. When combat ends, the addon handles queued triggers using your current specialization and assignment.
+- Summoning also waits while you're dead, AFK, flying, stealthed, casting, or in a pet battle. An unavailable pet can be replaced or cleared in settings.
+- **Chat logs** are off by default. Turn them on to see when a pet summon is queued, completed, or both.
 
 ### Titles
 
