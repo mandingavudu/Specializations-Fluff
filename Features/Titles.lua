@@ -87,13 +87,13 @@ local function ResolvePendingTitle()
         assignmentPending = false
         return
     end
-    if titleID > 0 and not GetPlayerTitleName(titleID) then
-        -- The known-title list can become available after entering the world.
-        return
-    end
     local currentTitle = GetCurrentTitle()
     if titleID == currentTitle or (titleID == NO_TITLE and currentTitle <= 0) then
         assignmentPending = false
+        return
+    end
+    if titleID > 0 and not GetPlayerTitleName(titleID) then
+        -- The known-title list can become available after entering the world.
         return
     end
     return titleID
@@ -145,13 +145,14 @@ events:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 events:RegisterEvent("PLAYER_REGEN_DISABLED")
 events:RegisterEvent("PLAYER_REGEN_ENABLED")
 events:RegisterEvent("KNOWN_TITLES_UPDATE")
+events:RegisterEvent("UNIT_NAME_UPDATE")
 events:SetScript("OnEvent", function(_, event, first, second)
     if event == "PLAYER_ENTERING_WORLD" then
         inWorld = true
         assignmentPending = assignmentPending or first or second
     elseif event == "PLAYER_LEAVING_WORLD" then
         inWorld = false
-    elseif event == "PLAYER_SPECIALIZATION_CHANGED" and first ~= "player" then
+    elseif (event == "PLAYER_SPECIALIZATION_CHANGED" or event == "UNIT_NAME_UPDATE") and first ~= "player" then
         return
     end
     RefreshInputQueue()
